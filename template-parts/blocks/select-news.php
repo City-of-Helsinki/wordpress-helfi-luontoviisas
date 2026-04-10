@@ -1,4 +1,4 @@
- <?php
+<?php
 
 /**
  * Select News Template.
@@ -25,12 +25,6 @@ $image = get_field('image');
 $link = get_field('link');
 $button_text = get_field('button_text') ? : 'Lue lisää';
 
-
-?>
-
-
-<?php 
-
 $news = get_field('select_news', false, false);
 
 $args = array(
@@ -39,35 +33,29 @@ $args = array(
 
 $query = new WP_Query($args);
 
-if ($query->have_posts()) : ?> 
-
-  <section class="section latest">
-    <div class="container">
-      <h2 class="section-title"><?= get_field('title'); ?></h2>
-      <div class="columns is-flex is-multiline">
-        <?php while ($query->have_posts()) : 
-          $query->the_post(); 
-          $ingressi = get_field('ingressi');
-          $image_id = get_post_thumbnail_id(get_the_ID());
-          $alt_text = get_post_meta($image_id , '_wp_attachment_image_alt', true);
-          ?>
-
-          <a href="<?php the_permalink(); ?>" class="column is-4 is-12-mobile">
-            <figure class="image is-3by2">
-              <img class="is-square" src="<?= get_the_post_thumbnail_url( $post->ID, 'large' ); ?>" alt="<?= $alt_text; ?>">
-            </figure>
-            <div class="text-content">
-              <h3 class="title is-4 is-medium"><?php the_title(); ?></h3>
-              <p class="excerpt"><?= $ingressi; ?></p>
-              <div class="hds-icon hds-icon--size-l hds-icon--arrow-right"></div>
-            </div>
-          </a>
-
-        <?php endwhile; wp_reset_postdata(); ?> 
-      </div>
-    </div>
-  </section>
+if ($query->have_posts()) : ?>
+	<section class="section latest">
+		<div class="container">
+			<h2 class="section-title"><?= get_field('title'); ?></h2>
+			<div class="columns is-flex is-multiline">
+				<?php while ($query->have_posts()) :
+					$query->the_post();
+					$ingressi = get_field('ingressi');
+					$image_id = get_post_thumbnail_id(get_the_ID());
+					$alt_text = get_post_meta($image_id , '_wp_attachment_image_alt', true);
+					?>
+					<a href="<?php the_permalink(); ?>" class="column is-4 is-12-mobile">
+						<figure class="image is-3by2">
+							<img class="is-square" src="<?= get_the_post_thumbnail_url( get_the_ID(), 'large' ); ?>" alt="<?= $alt_text; ?>">
+						</figure>
+						<div class="text-content">
+							<h3 class="title is-4 is-medium"><?php the_title(); ?></h3>
+							<p class="excerpt"><?= $ingressi; ?></p>
+							<div class="hds-icon hds-icon--size-l hds-icon--arrow-right"></div>
+						</div>
+					</a>
+				<?php endwhile; wp_reset_postdata(); ?>
+			</div>
+		</div>
+	</section>
 <?php endif; ?>
-
-
-
