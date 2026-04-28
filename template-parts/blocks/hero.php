@@ -1,4 +1,4 @@
- <?php
+<?php
 
 /**
  * Hero Block Template.
@@ -26,23 +26,17 @@ $link = get_field('link');
 $button_text = get_field('button_text') ? : 'Lue lisää';
 
 ?>
-
-
 <section class="<?php echo esc_attr($className); ?> wave-top bc-valkoinen" style="background-image: url('<?= $image ?>')">
-  <div class="container">
-    <div class="hero-box desktop-only">
-      <?= $text; ?>
-      <a href="<?= $link ?>" class="button"><?= $button_text ?></a>
-    </div>
-  </div>
-</div>
+	<div class="container">
+		<div class="hero-box desktop-only">
+			<?= $text; ?>
+			<a href="<?= $link ?>" class="button"><?= $button_text ?></a>
+		</div>
+	</div>
 </section>
 <section class="section mobile-hero mobile-only">
-  <div class="container hero-box">
-    <?= $text; ?>
-    <a href="<?= $link ?>" class="button"><?= $button_text ?></a>
-  </div>
+	<div class="container hero-box">
+		<?= $text; ?>
+		<a href="<?= $link ?>" class="button"><?= $button_text ?></a>
+	</div>
 </section>
-
-
-

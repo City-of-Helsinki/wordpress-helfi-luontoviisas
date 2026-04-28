@@ -19,13 +19,10 @@
             placeholder="Haku"
             />
             <div class="hds-search-input__buttons">
-              <button
-              type="button"
-              aria-label="Search"
-              class="hds-search-input__button"
-              >
-              <input type="submit" class="hds-icon hds-icon--search hds-icon--size-s" aria-hidden="true"></input>
-          </div>
+				<button type="button" aria-label="Search" class="hds-search-input__button">
+					<span type="submit" class="hds-icon hds-icon--search hds-icon--size-s" aria-hidden="true"></span>
+				</button>
+			</div>
       </div>
   </div>
 </form>

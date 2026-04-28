@@ -136,18 +136,78 @@ add_action( 'after_setup_theme', 'designhel_setup' );
 /**
  * Enqueue scripts and styles.
  */
+function luontoviissas_theme_version(): string {
+	return ( defined( 'WP_DEBUG' ) && WP_DEBUG )
+		? (string) time()
+		: wp_get_theme()->get( 'Version' );
+}
+
+add_action( 'enqueue_block_assets', 'luontoviisas_common_assets' );
+function luontoviisas_common_assets(): void {
+	$assets_url = get_template_directory_uri();
+	$assets_version = luontoviissas_theme_version();
+
+	$theme_handle = 'luontoviisas';
+
+	$owl_handle = 'owl-styles';
+	$owl_version = '2.3.4';
+
+	wp_enqueue_style(
+		$owl_handle,
+		$assets_url . '/src/owlcarousel/owl.carousel.min.css',
+		array(),
+		$owl_version,
+		'all'
+	);
+
+	wp_enqueue_style(
+		$owl_handle . '-default',
+		$assets_url . '/src/owlcarousel/owl.theme.default.min.css',
+		array( $owl_handle ),
+		$owl_version,
+		'all'
+	);
+
+	wp_enqueue_style(
+		$theme_handle,
+		$assets_url . '/dist/main.min.css',
+		array( $owl_handle ),
+		$assets_version,
+		'all'
+	);
+}
+
 function luontoviisas_scripts() {
+	$assets_url = get_template_directory_uri();
+	$assets_version = luontoviissas_theme_version();
+
+	$theme_handle = 'luontoviisas';
 
 	$scriptVersion = filemtime( get_stylesheet_directory() . '/dist/theme.min.js' );
 	$styleVersion = filemtime( get_stylesheet_directory() . '/dist/main.min.css' );
 
-	wp_enqueue_style( 'helsinkidesign-style', get_template_directory_uri() . '/dist/main.min.css', $styleVersion );
-	wp_enqueue_script( 'helsinkidesign-scipts', get_template_directory_uri() . '/dist/theme.min.js', array('jquery'), $scriptVersion, true );
+	wp_enqueue_script(
+		$theme_handle,
+		$assets_url . '/dist/theme.min.js',
+		array('jquery'),
+		$assets_version,
+		true
+	);
 
-	wp_enqueue_style( 'owl-styles', get_stylesheet_directory_uri() . '/src/owlcarousel/owl.carousel.min.css', '2.3.4');
-	wp_enqueue_style( 'owl-styles-default', get_stylesheet_directory_uri() . '/src/owlcarousel/owl.theme.default.min.css', array(''), '2.3.4', true );
-	wp_enqueue_script( 'owl-js', get_stylesheet_directory_uri() . '/src/owlcarousel/owl.carousel.min.js', array('jquery'), '2.3.4');
-	wp_enqueue_script( 'luontoviisas-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
+	wp_enqueue_script(
+		'owl-js',
+		$assets_url . '/src/owlcarousel/owl.carousel.min.js',
+		array('jquery'),
+		'2.3.4'
+	);
+
+	wp_enqueue_script(
+		$theme_handle . '-skip-link-focus-fix',
+		$assets_url . '/js/skip-link-focus-fix.js',
+		array(),
+		$assets_version,
+		true
+	);
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -212,11 +272,11 @@ function luontoviisas_custom_logo() {
 			'class'    => 'custom-logo',
 		) )
 	);
-	return $html;   
-} 
+	return $html;
+}
 
 
-function block_category( $categories, $post ) {
+function block_category( $categories, $block_editor_context ) {
 	return array_merge(
 		$categories,
 		array(
@@ -227,7 +287,7 @@ function block_category( $categories, $post ) {
 		)
 	);
 }
-add_filter( 'block_categories', 'block_category', 10, 2);
+add_filter( 'block_categories_all', 'block_category', 10, 2);
 
 
 
@@ -236,6 +296,8 @@ function my_acf_init_block_types() {
 
     // Check function exists.
 	if( function_exists('acf_register_block_type') ) {
+
+		add_filter( 'acf/blocks/default_block_version', fn() => 3 );
 
         // register a testimonial block.
 		acf_register_block_type(array(
@@ -379,7 +441,7 @@ function events_post_type() {
 add_action( 'init', 'events_post_type', 0 );
 
 /**
- * Display Post Blocks 
+ * Display Post Blocks
  *
  */
 // function display_post_blocks() {
@@ -443,7 +505,7 @@ function excerpt($limit) {
 
 /*
 *
-* Walker for the main menu 
+* Walker for the main menu
 *
 */
 add_filter( 'walker_nav_menu_start_el', 'add_arrow',10,4);
@@ -452,7 +514,7 @@ function add_arrow( $output, $item, $depth, $args ){
 //Only add class to 'top level' items on the 'primary' menu.
 	if('primary' == $args->theme_location && $depth === 0 ){
 		if (in_array("menu-item-has-children", $item->classes)) {
-			$output .='<button class="menu-toggle" aria-expanded="false" aria-label="Avaa alavalikko" tabindex="0"><div class="inner-button hds-icon hds-icon--size-m hds-icon--angle-down closed"></div></button>';
+			$output .='<button class="menu-toggle" aria-expanded="false" aria-label="Avaa alavalikko" tabindex="0"><span class="inner-button hds-icon hds-icon--size-m hds-icon--angle-down closed"></span></button>';
 		}
 	}
 	return $output;
@@ -476,4 +538,3 @@ function theme_archive_title( $title ) {
 }
 
 add_filter( 'get_the_archive_title', 'theme_archive_title' );
-
